@@ -46,7 +46,7 @@ Continuous control inputs are:
     - control thruster (left/right)
 """
 
-CONTINUOUS = True
+CONTINUOUS = False
 VEL_STATE = True  # Add velocity info to state
 FPS = 60
 SCALE_S = 0.35  # Temporal Scaling, lower is faster - adjust forces appropriately
@@ -351,7 +351,7 @@ class RocketLander(gym.Env):
     def step(self, action):
 
         self.force_dir = 0
-
+        print(CONTINUOUS)
         if CONTINUOUS:
             np.clip(action, -1, 1)
             self.gimbal += action[0] * 0.15 / FPS
@@ -628,6 +628,3 @@ class RocketLander(gym.Env):
 
 def rgb(r, g, b):
     return float(r) / 255, float(g) / 255, float(b) / 255
-
-env = gym.make("gym_rocketlander:rocketlander-v0")
-env.render()
