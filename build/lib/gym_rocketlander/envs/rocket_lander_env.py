@@ -628,6 +628,3 @@ class RocketLander(gym.Env):
 
 def rgb(r, g, b):
     return float(r) / 255, float(g) / 255, float(b) / 255
-
-env = gym.make("gym_rocketlander:rocketlander-v0")
-env.render()
