@@ -349,30 +349,20 @@ class RocketLander(gym.Env):
             return self.step(6)[0]
 
     def step(self, action):
-
         self.force_dir = 0
-        print(CONTINUOUS)
-        if CONTINUOUS:
-            np.clip(action, -1, 1)
-            self.gimbal += action[0] * 0.15 / FPS
-            self.throttle += action[1] * 0.5 / FPS
-            if action[2] > 0.5:
-                self.force_dir = 1
-            elif action[2] < -0.5:
-                self.force_dir = -1
-        else:
-            if action == 0:
-                self.gimbal += 0.01
-            elif action == 1:
-                self.gimbal -= 0.01
-            elif action == 2:
-                self.throttle += 0.01
-            elif action == 3:
-                self.throttle -= 0.01
-            elif action == 4:  # left
-                self.force_dir = -1
-            elif action == 5:  # right
-                self.force_dir = 1
+
+        if action == 0:
+            self.gimbal += 0.01
+        elif action == 1:
+            self.gimbal -= 0.01
+        elif action == 2:
+            self.throttle += 0.01
+        elif action == 3:
+            self.throttle -= 0.01
+        elif action == 4:  # left
+            self.force_dir = -1
+        elif action == 5:  # right
+            self.force_dir = 1
 
         self.gimbal = np.clip(self.gimbal, -GIMBAL_THRESHOLD, GIMBAL_THRESHOLD)
         self.throttle = np.clip(self.throttle, 0.0, 1.0)
