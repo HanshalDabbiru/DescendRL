@@ -18,16 +18,19 @@ class random_agent:
 
 
 def main():
-    agent = random_agent(env)
-    total_reward = 0
-    while True:
-        state, reward, done, _ = env.step(agent.random_action())
-        total_reward += reward
-        env.render()
-        if done:
-            break
+    # agent = random_agent(env)
+    # total_reward = 0
+    # while True:
+    #     state, reward, done, _ = env.step(agent.random_action())
+    #     total_reward += reward
+    #     env.render()
+    #     if done:
+    #         break
 
-    print(f"total reward: {total_reward}")
+    # print(f"total reward: {total_reward}")
+    import matplotlib.pyplot as plt
+    plt.plot([1, 2, 3], [4, 5, 6])
+    plt.show()
 
 
 if __name__ == "__main__":
