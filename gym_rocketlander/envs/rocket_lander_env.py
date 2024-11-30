@@ -350,7 +350,7 @@ class RocketLander(gym.Env):
 
     def step(self, action):
         self.force_dir = 0
-
+        
         if action == 0:
             self.gimbal += 0.01
         elif action == 1:
