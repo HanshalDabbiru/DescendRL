@@ -16,7 +16,7 @@ from gym.envs.classic_control import rendering
 The objective of this environment is to land a rocket on a ship.
 
 STATE VARIABLES
-The state consists of the following variables:`
+The state consists of the following variables:
     - x position
     - y position
     - angle
@@ -46,7 +46,7 @@ Continuous control inputs are:
     - control thruster (left/right)
 """
 
-CONTINUOUS = False
+CONTINUOUS = True
 VEL_STATE = True  # Add velocity info to state
 FPS = 60
 SCALE_S = 0.35  # Temporal Scaling, lower is faster - adjust forces appropriately
@@ -57,7 +57,7 @@ START_SPEED = 80.0
 
 # ROCKET
 MIN_THROTTLE = 0.4
-GIMBAL_THRESHOLD = 0.4
+GIMBAL_THRESHOLD = 0.2
 MAIN_ENGINE_POWER = 1600 * SCALE_S
 SIDE_ENGINE_POWER = 100 / FPS * SCALE_S
 
@@ -100,6 +100,8 @@ class ContactDetector(contactListener):
             or self.env.containers[1] in [contact.fixtureA.body, contact.fixtureB.body]
         ):
             self.env.game_over = True
+            #if self.env.lander in [contact.fixtureA.body, contact.fixtureB.body]:
+             #   print("1")
         else:
             for i in range(2):
                 if self.env.legs[i] in [contact.fixtureA.body, contact.fixtureB.body]:
@@ -125,6 +127,7 @@ class RocketLander(gym.Env):
         self.engine = None
         self.ship = None
         self.legs = []
+        self.hasLanded = False
 
         high = np.array([1, 1, 1, 1, 1, 1, 1, np.inf, np.inf, np.inf], dtype=np.float32)
         low = -high
@@ -349,20 +352,30 @@ class RocketLander(gym.Env):
             return self.step(6)[0]
 
     def step(self, action):
+
         self.force_dir = 0
-        
-        if action == 0:
-            self.gimbal += 0.01
-        elif action == 1:
-            self.gimbal -= 0.01
-        elif action == 2:
-            self.throttle += 0.01
-        elif action == 3:
-            self.throttle -= 0.01
-        elif action == 4:  # left
-            self.force_dir = -1
-        elif action == 5:  # right
-            self.force_dir = 1
+
+        if CONTINUOUS:
+            np.clip(action, -1, 1)
+            self.gimbal += action[0] * 0.15 / FPS
+            self.throttle += action[1] * 0.5 / FPS
+            if action[2] > 0.5:
+                self.force_dir = 1
+            elif action[2] < -0.5:
+                self.force_dir = -1
+        else:
+            if action == 0:
+                self.gimbal += 0.01
+            elif action == 1:
+                self.gimbal -= 0.01
+            elif action == 2:
+                self.throttle += 0.01
+            elif action == 3:
+                self.throttle -= 0.01
+            elif action == 4:  # left
+                self.force_dir = -1
+            elif action == 5:  # right
+                self.force_dir = 1
 
         self.gimbal = np.clip(self.gimbal, -GIMBAL_THRESHOLD, GIMBAL_THRESHOLD)
         self.throttle = np.clip(self.throttle, 0.0, 1.0)
@@ -423,12 +436,12 @@ class RocketLander(gym.Env):
         speed = np.linalg.norm(vel_l)
         groundcontact = self.legs[0].ground_contact or self.legs[1].ground_contact
         brokenleg = (
-            self.legs[0].joint.angle < 0 or self.legs[1].joint.angle > -0
+            self.legs[0].joint.angle > 0.3 or self.legs[1].joint.angle < -0.3      # self.legs[0].joint.angle < 0 or self.legs[1].joint.angle > -0
         ) and groundcontact
         outside = abs(pos.x - W / 2) > W / 2 or pos.y > H
         fuelcost = 0.1 * (0.5 * self.power + abs(self.force_dir)) / FPS
         landed = (
-            self.legs[0].ground_contact and self.legs[1].ground_contact and speed < 0.1
+            self.legs[0].ground_contact and self.legs[1].ground_contact and speed == 0
         )
         done = False
 
@@ -437,25 +450,72 @@ class RocketLander(gym.Env):
         if outside or brokenleg:
             self.game_over = True
 
+        # if brokenleg:
+        #     print(f"leg 1: {self.legs[0].joint.angle}, leg 2: {self.legs[1].joint.angle}")
+
         if self.game_over:
             done = True
         else:
             # reward shaping
-            shaping = -0.5 * (distance + speed + abs(angle) ** 2 + abs(vel_a) ** 2)
-            shaping += 0.1 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
+            shaping = -0.5 * (distance + speed + 4 * (abs(angle) ** 2) + 0.5 * abs(vel_a) ** 2)
+            shaping += 0.3 * (self.legs[0].ground_contact + self.legs[1].ground_contact)
+            shaping += 0.1 * (1 - x_distance)
             if self.prev_shaping is not None:
                 reward += shaping - self.prev_shaping
             self.prev_shaping = shaping
 
+            if vel_l[1] > 0:
+                done = True
+                print("positive")
+                reward -= 0.3 * vel_l[1]
+            if speed > 0.8 and y_distance < 0.4:
+                reward -= 0.01 * speed
+
+            # if y_distance < 0.5:
+            #     if abs(vel_a) > 0.1:
+            #         reward -= 0.01 * abs(vel_a)
+            # if abs(angle) ** 2 > 0:
+            #         reward -= 0.01 * abs(angle) ** 2
+
             if landed:
                 self.landed_ticks += 1
+                reward += 0.01 * self.landed_ticks
+                reward += 0.1 * (1 - self.throttle)
+                self.hasLanded = True
+                print(vel_l[1])
+                print("ST " + str(self.throttle))
+                print("touched")
             else:
                 self.landed_ticks = 0
-            if self.landed_ticks == FPS:
+            if self.hasLanded:
+                reward -= 0.5 * speed
+            if self.landed_ticks > 1:
+            #= FPS / 2:
                 reward = 1.0
-                done = True
+                #done = True
+                print("landed")
 
         if done:
+            self.hasLanded = False
+            if brokenleg:
+                #print("broken leg")
+                reward += 0.005
+            # elif outside:
+            #     print("outside")
+            # else:
+            #     print("fell over")
+            
+            if speed < 0.1:
+                reward += 0.1 * (1 - speed)
+            if abs(angle) < 0.1:
+                reward += 0.1 * (1 - abs(angle))
+            if groundcontact:
+                reward += 0.2
+                reward -= 0.1 * self.throttle
+                reward -= 0.1 * speed
+            else:
+                reward -= 0.05
+
             reward += max(-1, 0 - 2 * (speed + distance + abs(angle) + abs(vel_a)))
 
         reward = np.clip(reward, -1, 1)
