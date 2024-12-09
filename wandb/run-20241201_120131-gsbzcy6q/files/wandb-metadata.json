@@ -1,0 +1,17 @@
+{
+  "os":  "Windows-10-10.0.22631-SP0",
+  "python":  "3.10.11",
+  "startedAt":  "2024-12-01T20:01:31.270325Z",
+  "program":  "g:\\My Drive\\Junior Year\\CS 175\\Project\\Code\\gym-rocketlander\\gym_rocketlander\\PPO.py",
+  "codePath":  "gym_rocketlander\\PPO.py",
+  "git":  {
+    "remote":  "https://github.com/HanshalDabbiru/DescendRL.git",
+    "commit":  "e08b4d80f8c0d30908e9217cd431e211bb257119"
+  },
+  "email":  "hdabbiru@uci.edu",
+  "root":  "G:\\My Drive\\Junior Year\\CS 175\\Project\\Code\\gym-rocketlander",
+  "host":  "HD-Laptop1",
+  "username":  "chawk",
+  "executable":  "C:\\Users\\chawk\\AppData\\Local\\Programs\\Python\\Python310\\python.exe",
+  "codePathLocal":  "gym_rocketlander\\PPO.py"
+}

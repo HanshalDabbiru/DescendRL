@@ -1,0 +1,17 @@
+{"time":"2024-12-01T12:13:28.2116188-08:00","level":"INFO","msg":"using version","core version":"0.18.7"}
+{"time":"2024-12-01T12:13:28.2156539-08:00","level":"INFO","msg":"created symlink","path":"G:\\My Drive\\Junior Year\\CS 175\\Project\\Code\\gym-rocketlander\\wandb\\run-20241201_121328-5k494wkr\\logs\\debug-core.log"}
+{"time":"2024-12-01T12:13:29.6457496-08:00","level":"INFO","msg":"created new stream","id":"5k494wkr"}
+{"time":"2024-12-01T12:13:29.6457496-08:00","level":"INFO","msg":"stream: started","id":"5k494wkr"}
+{"time":"2024-12-01T12:13:29.6457496-08:00","level":"INFO","msg":"handler: started","stream_id":"5k494wkr"}
+{"time":"2024-12-01T12:13:29.6457496-08:00","level":"INFO","msg":"writer: Do: started","stream_id":"5k494wkr"}
+{"time":"2024-12-01T12:13:29.6457496-08:00","level":"INFO","msg":"sender: started","stream_id":"5k494wkr"}
+{"time":"2024-12-01T12:13:29.9381206-08:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-01T12:13:36.2210237-08:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-01T12:13:36.2218467-08:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-01T12:13:37.2333377-08:00","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"saving job artifact","runtime_seconds":0.7955272}],"total_operations":1}}
+{"time":"2024-12-01T12:13:37.9362926-08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-01T12:13:39.1106326-08:00","level":"INFO","msg":"stream: closing","id":"5k494wkr"}
+{"time":"2024-12-01T12:13:39.1165401-08:00","level":"INFO","msg":"handler: closed","stream_id":"5k494wkr"}
+{"time":"2024-12-01T12:13:39.1244864-08:00","level":"INFO","msg":"sender: closed","stream_id":"5k494wkr"}
+{"time":"2024-12-01T12:13:39.1240183-08:00","level":"INFO","msg":"writer: Close: closed","stream_id":"5k494wkr"}
+{"time":"2024-12-01T12:13:39.2532148-08:00","level":"INFO","msg":"stream: closed","id":"5k494wkr"}

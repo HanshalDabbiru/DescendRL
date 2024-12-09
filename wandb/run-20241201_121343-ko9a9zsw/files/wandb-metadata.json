@@ -1,0 +1,43 @@
+{
+  "os":  "Windows-10-10.0.22631-SP0",
+  "python":  "3.10.11",
+  "startedAt":  "2024-12-01T20:13:43.119474Z",
+  "program":  "g:\\My Drive\\Junior Year\\CS 175\\Project\\Code\\gym-rocketlander\\gym_rocketlander\\PPO.py",
+  "codePath":  "gym_rocketlander\\PPO.py",
+  "git":  {
+    "remote":  "https://github.com/HanshalDabbiru/DescendRL.git",
+    "commit":  "e08b4d80f8c0d30908e9217cd431e211bb257119"
+  },
+  "email":  "hdabbiru@uci.edu",
+  "root":  "G:\\My Drive\\Junior Year\\CS 175\\Project\\Code\\gym-rocketlander",
+  "host":  "HD-Laptop1",
+  "username":  "chawk",
+  "executable":  "C:\\Users\\chawk\\AppData\\Local\\Programs\\Python\\Python310\\python.exe",
+  "codePathLocal":  "gym_rocketlander\\PPO.py",
+  "cpu_count":  8,
+  "cpu_count_logical":  16,
+  "gpu":  "NVIDIA GeForce RTX 3050 Laptop GPU",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "1021821579264",
+      "used":  "414049513472"
+    }
+  },
+  "memory":  {
+    "total":  "29734412288"
+  },
+  "cpu":  {
+    "count":  8,
+    "countLogical":  16
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "memoryTotal":  "4294967296",
+      "cudaCores":  2048,
+      "architecture":  "Ampere"
+    }
+  ],
+  "cudaVersion":  "12.2"
+}
