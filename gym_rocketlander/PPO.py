@@ -78,30 +78,35 @@ def main():
     env.seed(42)
     env.reset()
 
-    watch = not True
+    model = PPO(
+        "MlpPolicy",
+        env,
+        verbose=0,
+        learning_rate=LEARNING_RATE,
+        batch_size=BATCH_SIZE,
+        gamma=GAMMA,
+        ent_coef=ENTROPY,
+    )
+    # model = A2C("MlpPolicy",
+    #     env,
+    #     verbose=0,
+    #     learning_rate=LEARNING_RATE,
+    #     # batch_size=BATCH_SIZE,
+    #     gamma=GAMMA)
+    callback = DataCallback()
+    model.learn(total_timesteps=N_STEPS, callback=callback, progress_bar=False)
+    # model = PPO.load("base_model_2")
 
-    if watch:
-        model = PPO.load("base_model_2")
-        evaluate_model(model, env)
-    else:
-        model = PPO(
-            "MlpPolicy",
-            env,
-            verbose=0,
-            learning_rate=LEARNING_RATE,
-            batch_size=BATCH_SIZE,
-            gamma=GAMMA,
-            ent_coef=ENTROPY,
-        )
-        callback = DataCallback()
-        model.learn(total_timesteps=N_STEPS, callback=callback, progress_bar=False)
-        evaluate_model(model, env)
+    evaluate_model(model, env)
+    save_video(model, env)
 
-        plt.plot(callback.mean_rewards)
-        plt.xlabel("Number of Episodes")
-        plt.ylabel("Cumulative Reward")
-        plt.show(block=True)
-        model.save("base_model_2")
+    model.save("base_model_2")
+
+    plt.plot(callback.mean_rewards)
+    plt.xlabel("Number of Episodes")
+    plt.ylabel("Cumulative Reward")
+    plt.show(block=True)
+
 
 if __name__ == "__main__":
     main()
