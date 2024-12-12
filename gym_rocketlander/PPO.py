@@ -72,7 +72,6 @@ def evaluate_model(model, env):
 def smooth_rewards(rewards, window=10):
     return np.convolve(rewards, np.ones(window) / window, mode="valid")
 
-
 def main():
     env = gym.make("gym_rocketlander:rocketlander-v0")
     env.seed(42)
