@@ -1,46 +1,8 @@
-# ![GIF](https://thumbs.gfycat.com/CoarseEmbellishedIsopod-max-14mb.gif)
-[Click here for higher quality video](https://gfycat.com/CoarseEmbellishedIsopod)
-
-The objective of this environment is to land a rocket on a ship. The environment is highly customizable and takes discrete or continuous inputs.
-
-### Installation
-```
-cd gym-rocketlander
-pip install -e .
-```
-
-### Usage
-Once the has been installed, it can be used like any other Gym environment:
-```py
-env = gym.make("gym_rocketlander:rocketlander-v0")
-```
-
-### STATE VARIABLES  
-The state consists of the following variables:
-  * x position  
-  * y position  
-  * angle  
-  * first leg ground contact indicator  
-  * second leg ground contact indicator  
-  * throttle  
-  * engine gimbal  
-  
-If VEL_STATE is set to true, the velocities are included:  
-  * x velocity  
-  * y velocity  
-  * angular velocity  
-  
-### CONTROL INPUTS  
-Discrete control inputs are:  
-  * gimbal left  
-  * gimbal right  
-  * throttle up  
-  * throttle down  
-  * use first control thruster  
-  * use second control thruster  
-  * no action  
-    
-Continuous control inputs are:  
-  * gimbal (left/right)  
-  * throttle (up/down)  
-  * control thruster (left/right)  
+gym_rocketlander/PPO.py: This file trains and runs the PPO agent. Set watch to False to watch a pretrained model, and True to train a new model
+gym_rocketlander/__init__.py: Registers the gym environment
+gym_rocketlander/envs/rocket_lander.py: This file creates the gym environemnt. Contains functions to initialize, reset, render, and step through the environment
+base_model.zip: Stores the full trained base model
+increating_heights.zip: Stores the fully trained model that was trained on increasing heights
+upward_penalty.zip: Stores the fully trained agent with the upward penalty
+drift.zip: Stores the fully trained model with a denser reward function
+final_model.zip: Stores the fully trained final model

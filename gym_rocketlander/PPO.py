@@ -4,17 +4,16 @@ import imageio
 import numpy as np
 from stable_baselines3 import PPO
 from stable_baselines3 import A2C
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.callbacks import BaseCallback
 
 
 LEARNING_RATE = 0.0003
-N_STEPS = 100000
+N_STEPS = 150000
 BATCH_SIZE = 256
 GAMMA = 0.95
 NUM_EVAL_EPISODES = 20
-ENTROPY = 0.01
+ENTROPY = 0.02
+WATCH = False
 
 
 class DataCallback(BaseCallback):
@@ -35,7 +34,6 @@ class DataCallback(BaseCallback):
             self.episode += 1
         return super()._on_step()
 
-
 def save_video(model, env):
     images = []
     obs = env.reset()
@@ -49,7 +47,6 @@ def save_video(model, env):
     video_path = "rocketlander2.mp4"
     imageio.mimsave(video_path, [np.array(img) for i, img in enumerate(images)], fps=30)
 
-
 def evaluate_model(model, env):
     num_landed = 0
     for _ in range(NUM_EVAL_EPISODES):
@@ -62,50 +59,39 @@ def evaluate_model(model, env):
             env.render()
             if done:
                 print("REWARD: " + str(cum_reward))
-                # if info["landed"]:
-                #     print("landed")
-                #     num_landed += 1
+                if info["landed"]:
+                    print("landed")
+                    num_landed += 1
                 break
     print(num_landed / NUM_EVAL_EPISODES)
-
-
-def smooth_rewards(rewards, window=10):
-    return np.convolve(rewards, np.ones(window) / window, mode="valid")
 
 def main():
     env = gym.make("gym_rocketlander:rocketlander-v0")
     env.seed(42)
     env.reset()
 
-    model = PPO(
-        "MlpPolicy",
-        env,
-        verbose=0,
-        learning_rate=LEARNING_RATE,
-        batch_size=BATCH_SIZE,
-        gamma=GAMMA,
-        ent_coef=ENTROPY,
-    )
-    # model = A2C("MlpPolicy",
-    #     env,
-    #     verbose=0,
-    #     learning_rate=LEARNING_RATE,
-    #     # batch_size=BATCH_SIZE,
-    #     gamma=GAMMA)
-    callback = DataCallback()
-    model.learn(total_timesteps=N_STEPS, callback=callback, progress_bar=False)
-    # model = PPO.load("base_model_2")
+    if WATCH:
+        model = PPO.load("final_model")
+        evaluate_model(model, env)
+    else:
+        model = PPO(
+            "MlpPolicy",
+            env,
+            verbose=0,
+            learning_rate=LEARNING_RATE,
+            batch_size=BATCH_SIZE,
+            gamma=GAMMA,
+            ent_coef=ENTROPY,
+        )
+        callback = DataCallback()
+        model.learn(total_timesteps=N_STEPS, callback=callback, progress_bar=False)
+        evaluate_model(model, env)
 
-    evaluate_model(model, env)
-    save_video(model, env)
-
-    model.save("base_model_2")
-
-    plt.plot(callback.mean_rewards)
-    plt.xlabel("Number of Episodes")
-    plt.ylabel("Cumulative Reward")
-    plt.show(block=True)
-
+        plt.plot(callback.mean_rewards)
+        plt.xlabel("Number of Episodes")
+        plt.ylabel("Cumulative Reward")
+        plt.show(block=True)
+        model.save("final_model")
 
 if __name__ == "__main__":
     main()
